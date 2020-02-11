@@ -8,9 +8,13 @@ import logging
 import pprint
 
 class PowertopWrapper:
+    # Shared by all instances. This will be read only.
+    header_str_1 = 'Usage;Wakeups/s;GPU ops/s;Disk IO/s;GFX Wakeups/s;Category;Description;PW Estimate'
+    header_str_2 = 'Usage;Device Name;PW Estimate'
+    unit_rate    = { 'mW': 1, 'uW': 0.001, 'W': 1000 }
 
     def __init__(self, csv, duration):
-
+        # Basic stuffs
         self._csv      = csv
         self._duration = duration
 
@@ -33,17 +37,13 @@ class PowertopWrapper:
                 "--csv="+self._csv,
                 "--time="+self._duration ])
 
-            data1 = self._parse_overview_of_software_power_consumers()
-            data2 = self._parse_device_power_report()
-
-            self._logger.info(data1)
-            self._logger.info(data2)
+            software = self._parse_watt(self.header_str_1)
+            device   = self._parse_watt(self.header_str_2)
 
         finally:
-
             os.remove(self._csv)
 
-        return (data1, data2)
+        return (software, device)
 
     #
     # Find powertop path and exit if it does not exist
@@ -66,16 +66,11 @@ class PowertopWrapper:
     #
     # Parse the powertop result
     #
-    def _parse_overview_of_software_power_consumers(self):
-
+    def _parse_watt(self, header_str):
         lines      = list()
-        header_str = 'Usage;Wakeups/s;GPU ops/s;Disk IO/s;GFX Wakeups/s;Category;Description;PW Estimate'
         headers    = header_str.lower().replace(' ', '_').replace('/', '_per_').split(';')
 
-        self._logger.debug(headers)
-
         with open( self._csv , 'r' ) as fd:
-
             parse_flg = False
 
             for line in fd:
@@ -84,7 +79,6 @@ class PowertopWrapper:
 
                 # Enable flag here if you want to parse something
                 if header_str in line:
-
                     self._logger.debug('Start parsing')
                     parse_flg = True
 
@@ -94,41 +88,29 @@ class PowertopWrapper:
 
                 # Only stack the line when the parse flag is set true
                 if parse_flg:
-
                     # Do not parse if the line is a header
                     if header_str in line: continue
 
                     columns = line.split(';')
-                    self._logger.debug(columns)
-                    lines.append({
-                        headers[-3]: columns[-3],
-                        headers[-2]: columns[-2],
-                        headers[-1]: columns[-1]})
 
+                    # Do not parse when there are not enough columns 
+                    if not len(columns) == len(headers): continue
+
+                    # Do not parse if watt information is not included in last element
+                    if not 'W' in columns[-1]: continue 
+                    values = { k: v for k, v in zip(headers, columns) }
+
+                    # This key is for aggregation in elasticsearch
+                    values.update({'milli_watts': self._units_to_int(values['pw_estimate'])})
+                    
+                    self._logger.debug(values)
+                    lines.append(values)
+                    
         return lines
 
-    #
-    # Parse Process Device 
-    
-    def _parse_device_power_report(self):
-        with open( self._csv , 'r' ) as fd:
+    # Convert string formatted unit to integer watts
+    def _units_to_int(self, str_unit):
 
-            parse_flg = False
+        columns = str_unit.strip().split(' ')
 
-            for line in fd:
-
-                line = line.strip()
-                if 'Usage;Device Name;PW Estimate' in line:
-
-                    self._logger.info('Start parsing')
-                    parse_flg = True
-
-                elif '____________________________________________________________________' in line:
-                    self._logger.info('End parsing')
-                    parse_flg = False
-
-                if parse_flg:
-
-                    lines.append(line)
-
-        return lines
+        return float(columns[0]) * self.unit_rate[ columns[-1] ]
