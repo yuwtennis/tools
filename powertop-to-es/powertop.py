@@ -17,7 +17,7 @@ class PowertopWrapper:
         # Init logger
         logging.basicConfig(format='%(asctime)s %(message)s')
         self._logger   = logging.getLogger(self.__class__.__name__)
-        self._logger.setLevel(logging.INFO)
+        self._logger.setLevel(logging.DEBUG)
 
     #
     # Simply execute powertop command
@@ -33,7 +33,7 @@ class PowertopWrapper:
                 "--csv="+self._csv,
                 "--time="+self._duration ])
 
-            data1 = self._parse_top10_power_consumers()
+            data1 = self._parse_overview_of_software_power_consumers()
             data2 = self._parse_device_power_report()
 
             self._logger.info(data1)
@@ -66,9 +66,13 @@ class PowertopWrapper:
     #
     # Parse the powertop result
     #
-    def _parse_top10_power_consumers(self):
+    def _parse_overview_of_software_power_consumers(self):
 
-        lines = list()
+        lines      = list()
+        header_str = 'Usage;Wakeups/s;GPU ops/s;Disk IO/s;GFX Wakeups/s;Category;Description;PW Estimate'
+        headers    = header_str.lower().replace(' ', '_').replace('/', '_per_').split(';')
+
+        self._logger.debug(headers)
 
         with open( self._csv , 'r' ) as fd:
 
@@ -79,31 +83,34 @@ class PowertopWrapper:
                 line = line.strip()
 
                 # Enable flag here if you want to parse something
-                if 'Usage;Events/s;Category;Description;PW Estimate' in line:
+                if header_str in line:
 
-                    self._logger.info('Start parsing')
+                    self._logger.debug('Start parsing')
                     parse_flg = True
 
                 elif '____________________________________________________________________' in line:
-                    self._logger.info('End parsing')
+                    self._logger.debug('End parsing')
                     parse_flg = False
 
-                # Only stack the line if the parse flag is set true
+                # Only stack the line when the parse flag is set true
                 if parse_flg:
 
-                    self._logger.info(line)
+                    # Do not parse if the line is a header
+                    if header_str in line: continue
 
-                    lines.append(line)
+                    columns = line.split(';')
+                    self._logger.debug(columns)
+                    lines.append({
+                        headers[-3]: columns[-3],
+                        headers[-2]: columns[-2],
+                        headers[-1]: columns[-1]})
 
         return lines
 
     #
     # Parse Process Device 
-    #
+    
     def _parse_device_power_report(self):
-
-        lines = list()
-
         with open( self._csv , 'r' ) as fd:
 
             parse_flg = False
@@ -121,9 +128,6 @@ class PowertopWrapper:
                     parse_flg = False
 
                 if parse_flg:
-
-
-                    self._logger.info(line)
 
                     lines.append(line)
 
