@@ -9,26 +9,25 @@ import pprint
 
 class PowertopWrapper:
     # Shared by all instances. This will be read only.
-    header_str_1 = 'Usage;Wakeups/s;GPU ops/s;Disk IO/s;GFX Wakeups/s;Category;Description;PW Estimate'
-    header_str_2 = 'Usage;Device Name;PW Estimate'
-    unit_rate    = { 'mW': 1, 'uW': 0.001, 'W': 1000 }
+    HEADER_STR_1 = 'Usage;Wakeups/s;GPU ops/s;Disk IO/s;GFX Wakeups/s;Category;Description;PW Estimate'
+    HEADER_STR_2 = 'Usage;Device Name;PW Estimate'
+    UNIT_RATE    = { 'mW': 1, 'uW': 0.001, 'W': 1000 }
+    LOG_LEVEL    = logging.INFO
 
-    def __init__(self, csv, duration):
+    def __init__(self, csv='powertop.csv', duration='3'):
         # Basic stuffs
         self._csv      = csv
         self._duration = duration
 
         # Init logger
-        logging.basicConfig(format='%(asctime)s %(message)s')
-        self._logger   = logging.getLogger(self.__class__.__name__)
-        self._logger.setLevel(logging.DEBUG)
+        self._logger   = self._prep_logger()
 
     #
     # Simply execute powertop command
     #
     def exec(self):
 
-        powertop_path = self._get_path()
+        powertop_path = self._get_powertop_path()
 
         try:
             subprocess.run([
@@ -37,8 +36,8 @@ class PowertopWrapper:
                 "--csv="+self._csv,
                 "--time="+self._duration ])
 
-            software = self._parse_watt(self.header_str_1)
-            device   = self._parse_watt(self.header_str_2)
+            software = self._parse_watt(self.HEADER_STR_1)
+            device   = self._parse_watt(self.HEADER_STR_2)
 
         finally:
             os.remove(self._csv)
@@ -48,7 +47,7 @@ class PowertopWrapper:
     #
     # Find powertop path and exit if it does not exist
     #
-    def _get_path(self):
+    def _get_powertop_path(self):
 
         path = None
 
@@ -113,4 +112,12 @@ class PowertopWrapper:
 
         columns = str_unit.strip().split(' ')
 
-        return float(columns[0]) * self.unit_rate[ columns[-1] ]
+        return float(columns[0]) * self.UNIT_RATE[ columns[-1] ]
+
+    # All private stuffs are below
+    def _prep_logger(self):
+        logger_ = logging.getLogger(__name__)
+        logger_.setLevel(self.LOG_LEVEL)
+
+        return logger_
+

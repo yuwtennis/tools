@@ -1,6 +1,9 @@
-
-from powertop import PowertopWrapper
+import sys
 import os
+import pprint
+sys.path.append(os.getcwd() + '/../app')
+
+from packages.powertop import PowertopWrapper
 
 def test_is_filedelted():
     csv = 'powertop.csv'
