@@ -24,14 +24,10 @@ jobs:
     # Install pylint
     - name: Prepare packages
       run: |
-        pip install pylint
+        pip install wheel pylint
 
     # Runs a set of commands using the runners shell
-    - name: Pylint for powertop-to-es
+    - name: Pylint for each directories
       run: |
         pylint powertop-to-es
-
-    # Runs a set of commands using the runners shell
-    - name: Pylint for powertop-to-es
-      run: |
         pylint check-tournament
