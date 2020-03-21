@@ -42,7 +42,7 @@ def main( url, tournament, identifier='style', identifier_str='text-align: cente
         # Notify to desktop
         notify_to_desktop(msg)
 
-    except e:
+    except:
 
         print('Something is wrong error: {}'.format(sys.exc_info()[0]))
 
