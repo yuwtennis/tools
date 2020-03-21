@@ -4,6 +4,7 @@ import urllib.request as rq
 from bs4 import BeautifulSoup
 import subprocess
 import argparse
+import sys
 
 # Little script to check if the tournament is applicable
 def get_list_of_candidates( url, identifier, identifier_str):
