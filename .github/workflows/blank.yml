@@ -22,6 +22,6 @@ jobs:
     # Runs a set of commands using the runners shell
     - name: Pylint for each directories
       run: |
-        pip install wheel pylint
+        pip install wheel && pip install pylint
         pylint powertop-to-es
         pylint check-tournament
