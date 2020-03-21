@@ -4,6 +4,7 @@ import urllib.request as rq
 from bs4 import BeautifulSoup
 import subprocess
 import argparse
+import sys
 
 # Little script to check if the tournament is applicable
 def get_list_of_candidates( url, identifier, identifier_str):
@@ -42,7 +43,7 @@ def main( url, tournament, identifier='style', identifier_str='text-align: cente
         # Notify to desktop
         notify_to_desktop(msg)
 
-    except e:
+    except:
 
         print('Something is wrong error: {}'.format(sys.exc_info()[0]))
 
