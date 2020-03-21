@@ -17,7 +17,7 @@ def get_list_of_candidates( url, identifier, identifier_str):
 
 def notify_to_desktop(msg):
 
-    subprocess.run(['notify-send', '--expire-time=10000', 'トーナメント申し込み状況', msg])
+    subprocess.run(['notify-send', '--expire-time=20000', 'トーナメント申し込み状況', msg])
 
 def parse_args():
 
@@ -42,9 +42,9 @@ def main( url, tournament, identifier='style', identifier_str='text-align: cente
         # Notify to desktop
         notify_to_desktop(msg)
 
-    except as e:
+    except e:
 
-        print('Something is wrong error: {}'.format(e))
+        print('Something is wrong error: {}'.format(sys.exc_info()[0]))
 
 
 if __name__ == "__main__":
