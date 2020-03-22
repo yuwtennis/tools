@@ -16,9 +16,8 @@ def get_list_of_candidates( url, identifier, identifier_str):
 
         return soup.find_all(style=identifier_str)
 
-def notify_to_desktop(msg):
-
-    subprocess.run(['notify-send', '--expire-time=20000', 'トーナメント申し込み状況', msg])
+def notify_to_desktop(msgs):
+    subprocess.run(['notify-send', '--expire-time=20000', 'トーナメント申し込み状況', '\n'.join(msgs)])
 
 def parse_args():
 
@@ -38,10 +37,10 @@ def main( url, tournament, identifier='style', identifier_str='text-align: cente
 
         # Check if the tournament is applicable or not
         dfs = pd.read_html(url)
-        msg = 'Currently {} is {}'.format(tournament, dfs[index][5][1])
+        msgs = ['{} on {} is {}'.format(tournament, row[0], row[5])  for index, row in dfs[index].loc[1:].iterrows() ]
 
         # Notify to desktop
-        notify_to_desktop(msg)
+        notify_to_desktop(msgs)
 
     except:
 
