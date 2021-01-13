@@ -6,34 +6,41 @@ function toCsv() {
   let csv = '';
 
   for(m=1; m <= 12; m++) {
-    let sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(year+'-'+m.toString().padStart(2, '0'));
-    let range = sheet.getRange('E18:E48').getValues()
+    let sheet = SpreadsheetApp
+                    .getActiveSpreadsheet()
+                    .getSheetByName(year+'-'+m.toString().padStart(2, '0'));
 
-    csv = csv+year+'-'+m.toString().padStart(2, '0')+','
+    // Column cashout
+    cash_out = parse(sheet, 'E3:E47');
 
-    // Clear columns with no value
-    for(i=0; i < range.length; i++) {
-      if(range[i].toString().length > 0) {
-        csv = csv+range[i]+','
-      }
-    }
-
-    csv = csv+'\n'
+    csv = csv
+            +year+'-'+m.toString().padStart(2, '0')
+            +','
+            +cash_out
+            +'\n';
   } 
 
   blob = createBlob(csv, 'income-'+year)
-  writeDrive(blob)
+  writeDrive(blob, '1xh_p115n3JKwVcEEbb9TOWlF9W3pZZqc')
 }
 
 function createBlob(csv, fileName) {
-  const contentType = 'text/csv';
-  const charset = 'utf-8';
-  const blob = Utilities.newBlob('', contentType, fileName).setDataFromString(csv, charset);
+  let contentType = 'text/csv';
+  let charset = 'utf-8';
+  let blob = Utilities.newBlob('', contentType, fileName).setDataFromString(csv, charset);
+
   return blob;
 }
 
-function writeDrive(blob) {
-  const folderId = '1xh_p115n3JKwVcEEbb9TOWlF9W3pZZqc';
+function writeDrive(blob, folderId) {
   const drive = DriveApp.getFolderById(folderId);
   drive.createFile(blob);
+}
+
+function parse(sheet, a1notation) {
+  let range = sheet.getRange(a1notation).getValues()
+
+  return range.filter(function(e) {
+    return e != '';
+  }).join();
 }
