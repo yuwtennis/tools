@@ -24,6 +24,7 @@ class Client:
         
         es_host = os.getenv('ES_HOST', ['localhost:19200'])
         service_account_data = os.getenv('SERVICE_ACCOUNT_DATA')
+        file_id = os.getenv('FILE_ID')
 
         # Prepare credential
         cls.LOGGER.info('Prepare credential.')
@@ -34,14 +35,7 @@ class Client:
 
         # Access drive
         cls.LOGGER.info('Get file ids from drive.')
-        results = service.files().list(\
-            orderBy='modifiedTime desc',\
-            q="name='income-2021'",\
-            fields="nextPageToken, files(id, name, modifiedTime)").execute()
-
-        items = results.get('files', [])
-
-        request = service.files().get_media(fileId=items[0]['id'])
+        request = service.files().get_media(fileId=file_id)
 
         fh = BytesIO()
         downloader = MediaIoBaseDownload(fh, request)
@@ -62,7 +56,7 @@ class Client:
 
     @classmethod
     def _construct_esdoc(cls, msgs, index):
-        def conv_str_to_int(msgs):
+        def str_to_int(msgs):
             for msg in msgs:
                 for k,v in msg.items():
                     if msg[k].isdigit():
@@ -71,7 +65,9 @@ class Client:
             return msgs
 
         now = datetime.utcnow()
-        msgs = conv_str_to_int(msgs)
+
+        # Convert numeric value from string to int
+        msgs = str_to_int(msgs)
 
         for msg in msgs:
             doc_id = md5()

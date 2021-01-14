@@ -20,7 +20,7 @@ function toCsv() {
   } 
 
   blob = createBlob(csv, 'income-'+year)
-  writeDrive(blob, '1xh_p115n3JKwVcEEbb9TOWlF9W3pZZqc')
+  writeDrive(blob, '1m9VD9AHecuo1maeZGgW7PAdKku1Uj8wV')
 }
 
 function createBlob(csv, fileName) {
@@ -31,9 +31,8 @@ function createBlob(csv, fileName) {
   return blob;
 }
 
-function writeDrive(blob, folderId) {
-  const drive = DriveApp.getFolderById(folderId);
-  drive.createFile(blob);
+function writeDrive(blob, fileId) {
+  Drive.Files.update({}, fileId, blob)
 }
 
 function parse(sheet, a1notation) {
@@ -49,3 +48,4 @@ function setHeader() {
 
   return header
 }
+
