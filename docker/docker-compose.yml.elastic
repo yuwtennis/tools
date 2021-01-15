@@ -1,0 +1,73 @@
+version: '3'
+services:
+  # Configuration based on
+  #  https://www.elastic.co/guide/en/logstash/7.7/docker-config.html
+  logstash:
+    hostname: logstash
+    image: docker.elastic.co/logstash/logstash:${LS_VERSION}
+    environment:
+      - LL_PATTERN_DIR=${LL_PATTERN_DIR}
+    volumes:
+      # Mount logstash config file directory
+      - ${WORKING_DIR}/logstash/pipeline/:/usr/share/logstash/pipeline/
+      # Mount log directory for logstash to read
+      - ${WORKING_DIR}/logstash/pattern.d/:/usr/share/logstash/pattern.d/
+      # Mount log directory for logstash to read
+      - ${WORKING_DIR}/logs/:/mnt/logs/
+    expose:
+      - "5044"
+    command: [ "-f", "${LS_CONF}" ]
+
+  # Configuration based on
+  # https://www.elastic.co/guide/en/beats/filebeat/current/running-on-docker.html
+  filebeat:
+    hostname: filebeat
+    user: root
+    image: docker.elastic.co/beats/filebeat:${FB_VERSION}
+    environment:
+      - strict.perms=false
+    volumes:
+      # Mount filebeat configuration file
+      - ${WORKING_DIR}/filebeat/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
+      # Mount docker related directories. Required by filebeat.
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Mount log directory for filebeat to read
+      - ${WORKING_DIR}/logs/:/mnt/logs/
+    # Port 5044/tcp has to be monitored explicitly in order to expect precise manner.
+    # https://docs.docker.com/compose/compose-file/#depends_on
+
+  # elasticsearch
+  # https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+    hostname: es01
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    expose:
+      - "9200"
+    ports:
+      - "19200:9200"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    restart: always
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.8.0
+    environment:
+      ELASTICSEARCH_HOSTS: http://es01:9200
+    ports:
+     - "5601:5601"
+    restart: always
+
+volumes:
+  data01:
+    driver: local
