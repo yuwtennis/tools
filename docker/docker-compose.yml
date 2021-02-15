@@ -1,19 +1,46 @@
-version: "3.3"
-
+version: '3'
 services:
+  # elasticsearch
+  # https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+    hostname: es01
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    expose:
+      - "9200"
+    ports:
+      - "19200:9200"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    restart: always
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.8.0
+    environment:
+      ELASTICSEARCH_HOSTS: http://es01:9200
+    ports:
+     - "5601:5601"
+    restart: always
   db:
     image: postgres:13.1-alpine
     restart: always
     volumes:
       - db-data:/var/lib/postgresql/data:rw
-    networks:
-      - service00
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
-
 volumes:
   db-data:
-networks:
-  service00:
+  data01:
+    external:
+      name: elastic-docker-skeleton_data01
