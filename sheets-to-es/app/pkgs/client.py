@@ -23,12 +23,11 @@ class Client:
     def run(cls):
         
         es_host = os.getenv('ES_HOST', ['localhost:19200'])
-        service_account_data = os.getenv('SERVICE_ACCOUNT_DATA')
+        service_account_file = os.getenv('SERVICE_ACCOUNT_FILE')
 
         # Prepare credential
         cls.LOGGER.info('Prepare credential.')
-        credentials = service_account.Credentials.from_service_account_info(
-                json.loads(service_account_data), scopes=cls.SCOPES)
+        credentials = service_account.Credentials.from_service_account_file(service_account_file, scopes=cls.SCOPES)
 
         service = build('drive', 'v3', credentials=credentials)
 
@@ -36,10 +35,12 @@ class Client:
         cls.LOGGER.info('Get file ids from drive.')
         results = service.files().list(\
             orderBy='modifiedTime desc',\
-            q="name='income-2021'",\
+            q="name='income-2021.csv'",\
             fields="nextPageToken, files(id, name, modifiedTime)").execute()
 
+
         items = results.get('files', [])
+        cls.LOGGER.info(items)
 
         request = service.files().get_media(fileId=items[0]['id'])
 
