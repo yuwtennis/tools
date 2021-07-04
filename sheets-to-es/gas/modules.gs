@@ -20,7 +20,7 @@ function toCsv() {
   } 
 
   blob = createBlob(csv, 'income-'+year)
-  writeDrive(blob, '1xh_p115n3JKwVcEEbb9TOWlF9W3pZZqc')
+  writeDrive(blob, '1m9VD9AHecuo1maeZGgW7PAdKku1Uj8wV')
 }
 
 function createBlob(csv, fileName) {
@@ -45,7 +45,7 @@ function parse(sheet, a1notation) {
 }
 
 function setHeader() {
-  let header = 'report_date,income_tax,resident_tax,life_insurance,employment_insurance,health_insurance,welfare_pension,savings,securities,401k,rent,electricity,gas,water,newspaper,cable_tv,tennis_club,pilates,nhk,parking,car,creditcard_visa,creditcard_view,creditcard_mc,basic_life,remote_work';
+  let header = 'report_date,income_tax,resident_tax,life_insurance,employment_insurance,health_insurance,welfare_pension,savings,securities,n401k,rent,electricity,gas,water,newspaper,cable_tv,tennis_club,pilates,nhk,parking,car,creditcard_visa,creditcard_view,creditcard_mc,basic_life,remote_work';
 
   return header
 }
