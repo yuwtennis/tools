@@ -15,7 +15,6 @@ from .schema import IncomeByItem
 
 SCOPES = ['https://www.googleapis.com/auth/drive']
 LOGGER = logging.getLogger(__name__)
-LOGGER.setLevel(logging.INFO)
 
 def run():
         
