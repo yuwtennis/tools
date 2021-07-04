@@ -18,7 +18,7 @@ LOGGER = logging.getLogger(__name__)
 
 def run():
         
-    es_host = os.getenv('ES_HOST', ['localhost:19200'])
+    es_host = os.getenv('ES_HOST', ['localhost:9200'])
     service_account_file = os.getenv('SERVICE_ACCOUNT_FILE')
 
     # Prepare credential
