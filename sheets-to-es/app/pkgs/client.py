@@ -10,8 +10,9 @@ import logging
 import os
 from hashlib import md5
 from datetime import datetime
-from .schema import IncomeByDate
-from .schema import IncomeByItem
+from .entities import IncomeByDateEntity
+from .entities import IncomeByItemEntity
+from .values import LabelValue
 
 SCOPES = ['https://www.googleapis.com/auth/drive']
 LOGGER = logging.getLogger(__name__)
@@ -71,7 +72,7 @@ def run():
 def construct_esdoc_by_date(msgs, index):
     for m in msgs:
         doc_id = md5(m['report_date'].encode('utf-8')).hexdigest()
-        body = IncomeByDate(updated_on=datetime.utcnow(), **m).dict()
+        body = IncomeByDateEntity(updated_on=datetime.utcnow(), **m).dict()
 
         yield dict(_id=doc_id, _op_type='index', _index=index, **body)
 
@@ -83,10 +84,11 @@ def construct_esdoc_by_item(msgs, index):
             doc_id = md5(f"{m['report_date']}_{m[k]}".encode('utf-8'))\
                     .hexdigest()
 
-            body = IncomeByItem(
+            body = IncomeByItemEntity(
                     report_date=m['report_date'],
                     updated_on = datetime.utcnow(),
                     item_key=k,
-                    item_value=m[k]).dict()
+                    item_value=m[k],
+                    item_labels=LabelValue.__fields__[k].get_default()).dict()
 
             yield dict(_id=doc_id, _op_type='index', _index=index, **body)

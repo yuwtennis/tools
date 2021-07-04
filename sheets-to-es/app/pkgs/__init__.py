@@ -3,4 +3,4 @@
 import logging
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.info)
+logger.setLevel(logging.INFO)
