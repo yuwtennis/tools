@@ -7,17 +7,16 @@ from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 import csv
 import logging
-import json
 import os
 from hashlib import md5
 from datetime import datetime
+from .schema import IncomeByDate
+from .schema import IncomeByItem
 
 class Client:
     SCOPES = ['https://www.googleapis.com/auth/drive']
     LOGGER = logging.getLogger(__name__)
     LOGGER.setLevel(logging.INFO)
-    ES_INDEX = 'income'
-    DATEFORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
     @classmethod
     def run(cls):
@@ -56,31 +55,43 @@ class Client:
         cls.LOGGER.info('Send to elasticsearch.')
         fh = StringIO(fh.getvalue().decode(), newline='')
 
+        data = list(csv.DictReader(fh))
+        es_inst = Elasticsearch(hosts=es_host)
+
         bulk(
-            Elasticsearch(hosts=es_host),
-            cls._construct_esdoc(list(csv.DictReader(fh)), cls.ES_INDEX)
+            es_inst,
+            cls._construct_esdoc_by_date(
+                data, 'income_by_date')
         )
 
+        bulk(
+            es_inst,
+            cls._construct_esdoc_by_item(
+                data, 'income_by_item')
+        )
+
+
     @classmethod
-    def _construct_esdoc(cls, msgs, index):
-        def conv_str_to_int(msgs):
-            for msg in msgs:
-                for k,v in msg.items():
-                    if msg[k].isdigit():
-                        msg[k] = int(v)
+    def _construct_esdoc_by_date(cls, msgs, index):
+        for m in msgs:
+            doc_id = md5(m['report_date'].encode('utf-8')).hexdigest()
+            body = IncomeByDate(updated_on=datetime.utcnow(), **m).dict()
 
-            return msgs
+            yield dict(_id=doc_id, _op_type='index', _index=index, **body)
 
-        now = datetime.utcnow()
-        msgs = conv_str_to_int(msgs)
+    @classmethod
+    def _construct_esdoc_by_item(cls, msgs, index):
+        for m in msgs:
+            keys = filter(lambda x: x != 'report_date', m.keys())
 
-        for msg in msgs:
-            doc_id = md5()
-            doc_id.update(msg['report_date'].encode())
-            msg.update({
-                'updated_on': now.strftime(cls.DATEFORMAT),
-                '_op_type': 'index',
-                '_index': index,
-                '_id': doc_id.hexdigest()})
+            for k in keys:
+                doc_id = md5(f"{m['report_date']}_{m[k]}".encode('utf-8'))\
+                        .hexdigest()
 
-            yield msg
+                body = IncomeByItem(
+                        report_date=m['report_date'],
+                        updated_on = datetime.utcnow(),
+                        item_key=k,
+                        item_value=m[k]).dict()
+
+                yield dict(_id=doc_id, _op_type='index', _index=index, **body)
