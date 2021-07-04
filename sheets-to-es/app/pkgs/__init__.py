@@ -1,2 +1,6 @@
-from .client import Client
-from .schema import *
+""" __init__.py """
+
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
