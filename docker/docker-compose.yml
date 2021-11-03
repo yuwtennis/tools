@@ -1,9 +1,16 @@
 version: "3.3"
 
 services:
+  jupyter:
+    image: jupyter/scipy-notebook:33add21fab64
+    restart: "always"
+    volumes:
+      - /home/jovyan
+    ports:
+      - "8888:8888"
   db:
     image: postgres:13.1-alpine
-    restart: always
+    restart: "no"
     volumes:
       - db-data:/var/lib/postgresql/data:rw
     networks:
@@ -12,6 +19,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
+    restart: "no"
 
   # elasticsearch
   # https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
@@ -32,7 +40,7 @@ services:
         hard: -1
     volumes:
       - data01:/usr/share/elasticsearch/data
-    restart: always
+    restart: "always"
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.13.4
@@ -42,7 +50,7 @@ services:
       - service00
     ports:
      - "5601:5601"
-    restart: always
+    restart: "always"
 
 volumes:
   data01:
