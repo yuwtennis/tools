@@ -31,9 +31,8 @@ function createBlob(csv, fileName) {
   return blob;
 }
 
-function writeDrive(blob, folderId) {
-  const drive = DriveApp.getFolderById(folderId);
-  drive.createFile(blob);
+function writeDrive(blob, fileId) {
+  Drive.Files.update({}, fileId, blob)
 }
 
 function parse(sheet, a1notation) {
@@ -49,3 +48,4 @@ function setHeader() {
 
   return header
 }
+
