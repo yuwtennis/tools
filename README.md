@@ -4,7 +4,7 @@ Group of tools which makes my life easy
 ## DEPRECATED power top
 Send the power status of linux desktop to elasticsearch
 
-## household_expenses
+## household expenses
 I manage household expenses in Google Sheets.   
 These are apps used by me that makes things comfortable.
 
@@ -20,8 +20,5 @@ Google Sheets -------> Google Drive ----------> Elasticsearch
               (By GAS)              (By python)
 ```
 
-## create_new_sheets_by_month_names
-Replicate a sheet as month name
-
 ## docker compose
-Docker compose
+Docker compose. Used in my lab environment.
