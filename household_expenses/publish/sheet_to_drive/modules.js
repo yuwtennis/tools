@@ -20,7 +20,7 @@ function toCsv() {
   } 
 
   blob = createBlob(csv, 'income-'+year)
-  writeDrive(blob, '1m9VD9AHecuo1maeZGgW7PAdKku1Uj8wV')
+  writeDrive(blob, 'MYDRIVEID')
 }
 
 function createBlob(csv, fileName) {
