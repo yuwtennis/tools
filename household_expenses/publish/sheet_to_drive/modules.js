@@ -6,7 +6,7 @@ function toCsv() {
   // csv
   let csv = setHeader()+'\n';
 
-  for(m=1; m <= 12; m++) {
+  for(m=0; m < 12; m++) {
     let monthName = new Date(year, m).toLocaleDateString('en-US', {month: 'short'})
     let sheet = SpreadsheetApp
                     .getActiveSpreadsheet()
@@ -16,7 +16,7 @@ function toCsv() {
     cash_out = parse(sheet, 'E3:E47');
 
     csv = csv
-            +year+'-'+m.toString().padStart(2, '0')+'-01'
+            +year+'-'+(m+1).toString().padStart(2, '0')+'-01'
             +','
             +cash_out+'\n';
   } 
