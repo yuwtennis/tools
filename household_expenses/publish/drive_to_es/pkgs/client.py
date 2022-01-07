@@ -21,10 +21,14 @@ def run():
         
     es_host = os.getenv('ES_HOST', ['localhost:9200'])
     service_account_file = os.getenv('SERVICE_ACCOUNT_FILE')
+    upload_file_name = os.getenv(
+        'UPLOAD_FILE_NAME',
+        f'income-{str(datetime.now().year)}.csv')
 
     # Prepare credential
     LOGGER.info('Prepare credential.')
-    credentials = service_account.Credentials.from_service_account_file(service_account_file, scopes=SCOPES)
+    credentials = service_account.Credentials.from_service_account_file(
+        service_account_file, scopes=SCOPES)
 
     service = build('drive', 'v3', credentials=credentials)
 
@@ -32,9 +36,8 @@ def run():
     LOGGER.info('Get file ids from drive.')
     results = service.files().list(\
         orderBy='modifiedTime desc',\
-        q="name='income-2021.csv'",\
+        q=f"name='{upload_file_name}'",\
         fields="nextPageToken, files(id, name, modifiedTime)").execute()
-
 
     items = results.get('files', [])
     LOGGER.info(items)
