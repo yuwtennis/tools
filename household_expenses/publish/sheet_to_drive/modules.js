@@ -1,4 +1,5 @@
 function toCsv() {
+  let fileId = '1X4TPTMNBJLy0P2grxiBYRURR9nMKA7iC'
   // Year in JST
   let year = Utilities.formatDate(new Date(), 'Asia/Tokyo', 'yyyy');
 
@@ -6,9 +7,10 @@ function toCsv() {
   let csv = setHeader()+'\n';
 
   for(m=1; m <= 12; m++) {
+    let monthName = new Date(year, m).toLocaleDateString('en-US', {month: 'short'})
     let sheet = SpreadsheetApp
                     .getActiveSpreadsheet()
-                    .getSheetByName(year+'-'+m.toString().padStart(2, '0'));
+                    .getSheetByName(monthName);
 
     // Column cashout
     cash_out = parse(sheet, 'E3:E47');
@@ -20,7 +22,7 @@ function toCsv() {
   } 
 
   blob = createBlob(csv, 'income-'+year)
-  writeDrive(blob, 'MYDRIVEID')
+  writeDrive(blob, fileId)
 }
 
 function createBlob(csv, fileName) {
