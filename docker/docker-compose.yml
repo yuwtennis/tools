@@ -16,10 +16,9 @@ services:
     networks:
       - service00
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
-    restart: "no"
 
   # elasticsearch
   # https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
@@ -51,6 +50,14 @@ services:
     ports:
      - "5601:5601"
     restart: "always"
+
+  mongo:
+    image: mongo:5.0.6-focal
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - "27017:27017"
 
 volumes:
   data01:
