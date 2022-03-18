@@ -39,6 +39,8 @@ def run():
         q=f"name='{upload_file_name}'",\
         fields="nextPageToken, files(id, name, modifiedTime)").execute()
 
+    LOGGER.info(dir(results))
+
     items = results.get('files', [])
     LOGGER.info(items)
 
@@ -78,6 +80,7 @@ def construct_esdoc_by_date(msgs, index):
         body = IncomeByDateEntity(updated_on=datetime.utcnow(), **m).dict()
 
         yield dict(_id=doc_id, _op_type='index', _index=index, **body)
+
 
 def construct_esdoc_by_item(msgs, index):
     for m in msgs:
