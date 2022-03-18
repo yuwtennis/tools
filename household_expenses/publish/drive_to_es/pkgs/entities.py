@@ -7,6 +7,7 @@ class IncomeByDateEntity(BaseModel):
     income_tax: int = 0
     resident_tax: int = 0
     life_insurance: int = 0
+    nursing_insurance: int = 0
     employment_insurance: int = 0
     health_insurance: int = 0
     welfare_pension: int = 0

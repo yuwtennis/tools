@@ -9,6 +9,7 @@ class LabelValue(BaseModel):
     life_insurance: list = Field(['insurance'], const=True)
     employment_insurance: list = Field(['insurance'], const=True)
     health_insurance: list = Field(['insurance'], const=True)
+    nursing_insurance: list = Field(['insurance'], const=True)
     welfare_pension: list = Field(['insurance'], const=True)
     savings: list = Field(['asset'], const=True)
     securities: list = Field(['asset'], const=True)
