@@ -1,4 +1,4 @@
-ES_HOST := elasticsearch:9200
+ES_HOST := http://elasticsearch:9200
 SERVICE_ACCOUNT_FILE := /app/elite-caster-125113-90bc4da32331.json
 
 build:
