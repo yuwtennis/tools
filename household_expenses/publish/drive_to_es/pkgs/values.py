@@ -27,6 +27,6 @@ class LabelValue(BaseModel):
     car: list = Field(['cashout',], const=True)
     creditcard_visa: list = Field(['cashout','creditcard'], const=True)
     creditcard_view: list = Field(['cashout','creditcard'], const=True)
-    creditcard_mc: list = Field(['cashout','creditccard'], const=True)
+    creditcard_mc: list = Field(['cashout','creditcard'], const=True)
     basic_life: list = Field(['cashout',], const=True)
     remote_work: list = Field(['cashout',], const=True)
