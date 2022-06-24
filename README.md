@@ -1,9 +1,6 @@
 # tools
 Group of tools which makes my life easy
 
-## DEPRECATED power top
-Send the power status of linux desktop to elasticsearch
-
 ## household expenses
 I manage household expenses in Google Sheets.   
 These are apps used by me that makes things comfortable.
@@ -22,3 +19,6 @@ Google Sheets -------> Google Drive ----------> Elasticsearch
 
 ## docker compose
 Docker compose. Used in my lab environment.
+
+## Stocks
+Crawls yahoo finance and send to elasticsearch for nice kibana dashboard.

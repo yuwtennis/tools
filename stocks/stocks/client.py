@@ -5,7 +5,19 @@ from stocks.stocks.model import StockQuote
 
 
 def run(ticker_list: list):
+    """
+    Crawl yahoo finance and send to elasticsearch
 
+    Parameters
+    ----------
+    ticker_list: list
+        List of tickers to crawl
+
+    Returns
+    -------
+    None
+
+    """
     for t in ticker_list:
         ticker: Ticker = Ticker(t)
         detail: dict = ticker.info
