@@ -1,10 +1,18 @@
 # tools
 Group of tools which makes my life easy
 
-## DEPRECATED power top
-Send the power status of linux desktop to elasticsearch
+* [Environments](#environments)
+  * [Docker compose](#docker-compose)
+* [Applications](#applications)
+  * [Household expenses](#household-expenses)
+  * [Stocks](#stocks)
 
-## household expenses
+## Environments
+### Docker compose
+Docker compose. Used in my lab environment.
+
+## Applications
+### Household expenses
 I manage household expenses in Google Sheets.   
 These are apps used by me that makes things comfortable.
 
@@ -20,5 +28,23 @@ Google Sheets -------> Google Drive ----------> Elasticsearch
               (By GAS)              (By python)
 ```
 
-## docker compose
-Docker compose. Used in my lab environment.
+### Stocks
+Crawls yahoo finance and send to elasticsearch for nice kibana dashboard.
+
+#### Getting started
+
+Available environment variables
+
+| Variable    | Description                                             | Default    |
+|-----|---------------------------------------------------------|-----|
+| BACKEND_TYPE    | Backends to use. Options are<br>stdout<br>elasticsearch | stdout    |
+| ES_HOST    | Elasticsearch host to connect to.                       | localhost    |
+
+
+```markdown
+# Build
+make build
+
+# Test
+make test
+```
