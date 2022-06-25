@@ -1,7 +1,10 @@
-import datetime
-import hashlib
+import os
+
+import logging
+
+from elasticsearch_dsl.connections import connections
 from yfinance import Ticker
-from stocks.stocks.model import StockQuote
+from stocks.persistence import persist
 
 
 def run(ticker_list: list):
@@ -18,16 +21,12 @@ def run(ticker_list: list):
     None
 
     """
+    connections.create_connection(
+        hosts=[os.getenv('ES_HOST', 'localhost')],
+        sniff_on_start=True)
+
     for t in ticker_list:
+        logging.info('Crawling %s...', t)
         ticker: Ticker = Ticker(t)
         detail: dict = ticker.info
-
-        quote: StockQuote = StockQuote(
-            updated_on=datetime.datetime.utcnow(),
-            symbol=detail.get('symbol'),
-            short_name=detail.get('short_name'),
-            regularMarketPrice=detail.get('regularMarketPrice')
-        )
-
-        quote.meta.id = hashlib.sha256(quote.updated_on.isoformat()).hexdigest()
-        quote.save()
+        persist(detail, os.getenv('BACKEND_TYPE', 'stdout'))
