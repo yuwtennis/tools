@@ -19,7 +19,8 @@ if __name__ == '__main__':
         'NY.GDP.MKTP.CN',
         'NY.GDP.MKTP.KD',
         'NY.GDP.MKTP.KN',
-        'NY.GDP.MKTP.KD.ZG'
+        'NY.GDP.MKTP.KD.ZG',
+        'FP.CPI.TOTL.ZG'
     ]
 
     try:
