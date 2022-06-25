@@ -2,7 +2,7 @@ import logging
 import sys
 import traceback
 
-from stocks.client import run
+from economy.client import run
 
 if __name__ == '__main__':
 
@@ -14,7 +14,15 @@ if __name__ == '__main__':
         '^FTSE'
     ]
 
+    indicator_list: list = [
+        'NY.GDP.MKTP.CD',
+        'NY.GDP.MKTP.CN',
+        'NY.GDP.MKTP.KD',
+        'NY.GDP.MKTP.KN',
+        'NY.GDP.MKTP.KD.ZG'
+    ]
+
     try:
-        run(ticker_list)
+        run(ticker_list, indicator_list)
     except:
         traceback.print_exc(file=sys.stdout)

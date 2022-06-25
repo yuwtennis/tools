@@ -3,16 +3,18 @@ import importlib
 import pprint
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
-from stocks.model import StockQuote
+from typing import Generator
+
+from economy.model import StockQuote
 
 
-def persist(quote: dict, backend_type: str):
+def persist(entities: list, backend_type: str):
     """
     interface when persisting to backend
 
     Parameters
     ----------
-    quote: str
+    entities: list
     backend_type: str
 
     Raises
@@ -20,9 +22,9 @@ def persist(quote: dict, backend_type: str):
     ValueError
 
     """
-    module: object = importlib.import_module('stocks.persistence')
+    module: object = importlib.import_module('economy.persistence')
     obj: Backends = getattr(module, backend_type.capitalize())()
-    obj.store(quote)
+    obj.store(entities)
 
 
 class Backends(metaclass=ABCMeta):
@@ -30,34 +32,34 @@ class Backends(metaclass=ABCMeta):
     Defines various backend procedures
     """
     @abstractmethod
-    def store(self, quote: dict):
+    def store(self, entities: list):
         raise NotImplemented
 
 
 class Stdout(Backends):
 
-    def store(self, quote: dict):
+    def store(self, entities: Generator):
         """
 
         Parameters
         ----------
-        quote
+        entities
 
         Returns
         -------
 
         """
-        pprint.pprint(quote)
+        pprint.pprint(entities)
 
 
 class Elasticsearch(Backends):
 
-    def store(self, quote: dict):
+    def store(self, entities: Generator):
         """
 
         Parameters
         ----------
-        quote
+        entities
 
         Raises
         ------
@@ -66,12 +68,6 @@ class Elasticsearch(Backends):
 
         """
 
-        quote: StockQuote = StockQuote(
-            updated_on=datetime.utcnow(),
-            symbol=quote.get('symbol'),
-            short_name=quote.get('short_name'),
-            regularMarketPrice=quote.get('regularMarketPrice')
-        )
-
-        quote.meta.id = hashlib.sha256(quote.updated_on.isoformat().encode()).hexdigest()
-        quote.save()
+        # FIXME as bulk request
+        for e in entities:
+            e.save()

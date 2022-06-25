@@ -5,7 +5,7 @@ Group of tools which makes my life easy
   * [Docker compose](#docker-compose)
 * [Applications](#applications)
   * [Household expenses](#household-expenses)
-  * [Stocks](#stocks)
+  * [Economy](#economy)
 
 ## Environments
 ### Docker compose
@@ -28,7 +28,7 @@ Google Sheets -------> Google Drive ----------> Elasticsearch
               (By GAS)              (By python)
 ```
 
-### Stocks
+### Economy
 Crawls yahoo finance and send to elasticsearch for nice kibana dashboard.
 
 #### Getting started
