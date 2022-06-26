@@ -12,7 +12,7 @@ Group of tools which makes my life easy
 Docker compose. Used in my lab environment.
 
 ## Applications
-### Household expenses
+### Household expenses (google app script and python)
 I manage household expenses in Google Sheets.   
 These are apps used by me that makes things comfortable.
 
@@ -28,8 +28,8 @@ Google Sheets -------> Google Drive ----------> Elasticsearch
               (By GAS)              (By python)
 ```
 
-### Economy
-Crawls yahoo finance and send to elasticsearch for nice kibana dashboard.
+### Economy (python)
+Crawls yahoo finance, world bank and send to elasticsearch for nice kibana dashboard.
 
 #### Getting started
 
@@ -48,3 +48,6 @@ make build
 # Test
 make test
 ```
+
+### Used mansion price in Japan (GO)
+Query from 
