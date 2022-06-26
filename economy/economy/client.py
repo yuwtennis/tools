@@ -13,31 +13,25 @@ from economy.model import WorldBank, StockQuote
 
 logger = logging.getLogger(__name__)
 
-def run(ticker_list: list, indicator_list: list):
+
+def run(config: dict):
     """
     Crawl yahoo finance and send to elasticsearch
 
     Parameters
     ----------
-    indicator_list
-    ticker_list: list
-        List of tickers to crawl
+    config: dict
+        includes list of keys to crawl
 
     Returns
     -------
     None
 
     """
-    connections.create_connection(
-        hosts=[os.getenv('ES_HOST', 'localhost')],
-        sniff_on_start=True)
+    connections.create_connection(hosts=[os.getenv('ES_HOST', 'localhost')], sniff_on_start=True)
 
-    persist(
-        iter_ticker(ticker_list),
-        os.getenv('BACKEND_TYPE', 'stdout'))
-    persist(
-        iter_world_bank(indicator_list),
-        os.getenv('BACKEND_TYPE', 'stdout'))
+    persist(iter_ticker(config.get('tickers')), os.getenv('BACKEND_TYPE', 'stdout'))
+    persist(iter_world_bank(config.get('indicators')), os.getenv('BACKEND_TYPE', 'stdout'))
 
 
 def iter_ticker(ticker_list: list) -> Generator:
@@ -55,13 +49,7 @@ def iter_ticker(ticker_list: list) -> Generator:
         logger.info('Crawling %s...', t)
         ticker: Ticker = Ticker(t)
         detail: dict = ticker.info
-        quote: StockQuote = StockQuote(
-            updated_on=datetime.utcnow(),
-            symbol=detail.get('symbol'),
-            short_name=detail.get('short_name'),
-            regular_market_price=detail.get('regularMarketPrice')
-        )
-
+        quote: StockQuote = StockQuote(updated_on=datetime.utcnow(), **detail)
         quote.meta.id = hashlib.sha256(quote.updated_on.isoformat().encode()).hexdigest()
 
         yield quote
@@ -86,12 +74,8 @@ def iter_world_bank(indicator_list: list) -> Generator:
             r = requests.get(url, params={
                 'date': f'{curr_year-10}:{curr_year}', 'format': 'json'})
             for detail in r.json()[1]:
-                wb: WorldBank = WorldBank(
-                    updated_on=datetime.utcnow(),
-                    date=detail.get('date'),
-                    countryiso3code=detail.get('countryiso3code'),
-                    indicator=detail.get('indicator'),
-                    value=detail.get('value')
-                )
+                wb: WorldBank = WorldBank(updated_on=datetime.utcnow(), **detail)
+                # Overwrite with beginning of month
+                wb.date = datetime(year=int(wb.date), month=1, day=1)
                 wb.meta.id = hashlib.sha256(f"{wb.date}_{wb.indicator}".encode()).hexdigest()
                 yield wb
