@@ -24,6 +24,8 @@ class WorldBank(Document):
 
     """
     updated_on = Date()
+    obs_status = Keyword()
+    unit = Keyword()
 
     def save(self, **kwargs):
         # override the index to go to the proper timeslot
