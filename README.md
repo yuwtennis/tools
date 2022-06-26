@@ -50,4 +50,6 @@ make test
 ```
 
 ### Used mansion price in Japan (GO)
-Query from 
+Download data and load to elasticsearch
+
+https://www.land.mlit.go.jp/webland/servlet/MainServlet
