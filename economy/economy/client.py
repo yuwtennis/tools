@@ -1,7 +1,7 @@
 import os
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Generator
 
 import requests
@@ -43,6 +43,7 @@ def iter_ticker(ticker_list: list) -> Generator:
 
     Returns
     -------
+    Generator
 
     """
     for t in ticker_list:
@@ -64,6 +65,7 @@ def iter_world_bank(indicator_list: list) -> Generator:
 
     Returns
     -------
+    Generator
 
     """
     for c in ['jpn']:
@@ -76,6 +78,6 @@ def iter_world_bank(indicator_list: list) -> Generator:
             for detail in r.json()[1]:
                 wb: WorldBank = WorldBank(updated_on=datetime.utcnow(), **detail)
                 # Overwrite with beginning of month
-                wb.date = datetime(year=int(wb.date), month=1, day=1)
+                wb.date = datetime(year=int(wb.date), month=1, day=1, tzinfo=timezone.utc)
                 wb.meta.id = hashlib.sha256(f"{wb.date}_{wb.indicator}".encode()).hexdigest()
                 yield wb
