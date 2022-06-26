@@ -1,6 +1,6 @@
 package main
 
-import "used-mansion/internal"
+import "realestates/internal"
 
 func main() {
 	internal.Run()

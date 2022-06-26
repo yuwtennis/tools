@@ -49,7 +49,7 @@ make build
 make test
 ```
 
-### Used mansion price in Japan (GO)
-Download data and load to elasticsearch
+### Real Estates (GO)
+Download data from below and load to elasticsearch.
 
 https://www.land.mlit.go.jp/webland/servlet/MainServlet

@@ -1,4 +1,4 @@
-module used-mansion
+module realestates
 
 go 1.18
 
