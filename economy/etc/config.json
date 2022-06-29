@@ -1,0 +1,25 @@
+{
+  "tickers" : [
+    "^N225",
+    "^NYA",
+    "^IXIC",
+    "^FTSE",
+    "^HSI",
+    "000001.SS",
+    "IMOEX.ME",
+    "^STI",
+    "^KLSE",
+    "^N100",
+    "^FCHI",
+    "DAX",
+    "^SSMI"
+  ],
+  "indicators": [
+    "NY.GDP.MKTP.CD",
+    "NY.GDP.MKTP.CN",
+    "NY.GDP.MKTP.KD",
+    "NY.GDP.MKTP.KN",
+    "NY.GDP.MKTP.KD.ZG",
+    "FP.CPI.TOTL.ZG"
+  ]
+}
