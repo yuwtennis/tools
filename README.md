@@ -9,10 +9,16 @@ Group of tools which makes my life easy
 
 ## Environments
 ### Docker compose
+
+Directory: `docker/`
+
 Docker compose. Used in my lab environment.
 
 ## Applications
 ### Household expenses
+
+Directory `household_expenses/`
+
 I manage household expenses in Google Sheets.   
 These are apps used by me that makes things comfortable.
 
@@ -29,6 +35,9 @@ Google Sheets -------> Google Drive ----------> Elasticsearch
 ```
 
 ### Economy
+
+Directory `economy/`
+
 Crawls yahoo finance and send to elasticsearch for nice kibana dashboard.
 
 #### Getting started
@@ -47,4 +56,23 @@ make build
 
 # Test
 make test
+```
+
+### Ping parser
+
+Directory `scripts/ping_parser/`
+
+Parses ping result and send to elasticsearch. Used ingest pipeline to parse fields.  
+I am using this to check network performance when I am outside.
+
+I have tested with elasticsearch `7.17.4` .
+
+#### Getting started
+
+```markdown
+# Create ingest pipeline
+curl -XPUT _ingest/pipeline/ping-result-parser
+
+# Run script
+bash ping.sh
 ```

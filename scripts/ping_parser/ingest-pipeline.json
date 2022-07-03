@@ -1,0 +1,11 @@
+{
+       "description" : "Parse ping result.",
+    "processors": [
+       {
+              "grok": {
+                     "field": "message",
+                     "patterns": ["%{TIMESTAMP_ISO8601:@timestamp} %{HOSTNAME:hostname} rtt min/avg/max/mdev = %{NUMBER:min:float}/%{NUMBER:avg:float}/%{NUMBER:max:float}/%{NUMBER:mdev:float} ms"]
+              }
+       }
+]
+}
