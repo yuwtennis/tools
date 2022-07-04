@@ -1,5 +1,5 @@
 
-FROM=`hostnamectl status | grep "Static hostname" | cut -d ' ' -f 4`
+FROM=`ip a show dev wlp0s20f3 | grep -w inet | cut -d ' ' -f 6 | cut -d '/' -f 1`
 TO="www.google.com"
 DATE=`date -u --iso-8601=seconds`
 RESULT=`ping -c 3 ${TO} | grep rtt` ; echo "$TO $RESULT"
