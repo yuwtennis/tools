@@ -4,7 +4,7 @@ TO="www.google.com"
 DATE=`date -u --iso-8601=seconds`
 PING_RESULT=`ping -c 3 ${TO} | grep rtt` ; echo "$TO $RESULT"
 
-function check_running_interface() {
+function check_interface_state() {
   local INTERFACE=$1
 
   echo `ip l show $INTERFACE | grep state | cut -d ' ' -f 9`
@@ -18,9 +18,9 @@ function check_address() {
 
 function main() {
 
-  if [ `check_running_interface 'enp38s0f1'` == 'UP' ]; then
+  if [ `check_interface_state 'enp38s0f1'` == 'UP' ]; then
     RUNNING_INTERFACE=enp38s0f1
-  elif [  `check_running_interface 'wlp0s20f3'` == 'UP' ]; then
+  elif [  `check_interface_state 'wlp0s20f3'` == 'UP' ]; then
     RUNNING_INTERFACE=wlp0s20f3
   else
     echo 'Expected interface not found'
