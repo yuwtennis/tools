@@ -1,12 +1,39 @@
+#!/bin/sh
 
-FROM=`ip a show dev wlp0s20f3 | grep -w inet | cut -d ' ' -f 6 | cut -d '/' -f 1`
 TO="www.google.com"
 DATE=`date -u --iso-8601=seconds`
-RESULT=`ping -c 3 ${TO} | grep rtt` ; echo "$TO $RESULT"
+PING_RESULT=`ping -c 3 ${TO} | grep rtt` ; echo "$TO $RESULT"
 
-curl -H 'Content-Type: application/json' \
-     -XPOST localhost:9200/ping-result/_doc?pipeline=ping-result-parser -d '
-{
-  "message": "'"${DATE} ${FROM} ${TO} ${RESULT}"'"
+function check_running_interface() {
+  local INTERFACE=$1
+
+  echo `ip l show $INTERFACE | grep state | cut -d ' ' -f 9`
 }
-'
+
+function check_address() {
+  local INTERFACE=$1
+
+  echo `ip a show $INTERFACE | grep -w inet | cut -d ' ' -f 6 | cut -d '/' -f 1`
+}
+
+function main() {
+
+  if [ `check_running_interface 'enp38s0f1'` == 'UP' ]; then
+    RUNNING_INTERFACE=enp38s0f1
+  elif [  `check_running_interface 'wlp0s20f3'` == 'UP' ]; then
+    RUNNING_INTERFACE=wlp0s20f3
+  else
+    echo 'Expected interface not found'
+    exit
+  fi
+
+  FROM=`check_address $RUNNING_INTERFACE`
+
+  curl -H 'Content-Type: application/json' \
+       -XPOST localhost:9200/ping-result/_doc?pipeline=ping-result-parser -d '
+{
+  "message": "'"${DATE} ${FROM} ${TO} ${PING_RESULT}"'"
+}'
+}
+
+main
