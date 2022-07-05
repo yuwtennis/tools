@@ -62,7 +62,7 @@ make test
 
 Directory `scripts/ping_parser/`
 
-Parses ping result and send to elasticsearch. Used ingest pipeline to parse fields.  
+Parses ping result and send to elasticsearch. Used [ingest pipeline](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/ingest.html) to parse fields.  
 I am using this to check network performance when I am outside.
 
 I have tested with elasticsearch `7.17.4` .
