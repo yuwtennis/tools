@@ -1,6 +1,8 @@
 #!/bin/sh
 
 TO="www.google.com"
+WIRED_INTERFACE=enp38s0f1
+WIRELESS_INTERFACE=wlp0s20f3
 DATE=`date -u --iso-8601=seconds`
 PING_RESULT=`ping -c 3 ${TO} | grep rtt` ; echo "$TO $RESULT"
 
@@ -18,10 +20,11 @@ function check_address() {
 
 function main() {
 
-  if [ `check_interface_state 'enp38s0f1'` == 'UP' ]; then
-    RUNNING_INTERFACE=enp38s0f1
-  elif [  `check_interface_state 'wlp0s20f3'` == 'UP' ]; then
-    RUNNING_INTERFACE=wlp0s20f3
+  # Decide running interface
+  if [ `check_interface_state $WIRED_INTERFACE` == 'UP' ]; then
+    RUNNING_INTERFACE=$WIRED_INTERFACE
+  elif [  `check_interface_state $WIRELESS_INTERFACE` == 'UP' ]; then
+    RUNNING_INTERFACE=$WIRELESS_INTERFACE
   else
     echo 'Expected interface not found'
     exit
