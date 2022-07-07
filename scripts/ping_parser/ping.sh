@@ -3,8 +3,6 @@
 TO="www.google.com"
 WIRED_INTERFACE=enp38s0f1
 WIRELESS_INTERFACE=wlp0s20f3
-DATE=`date -u --iso-8601=seconds`
-PING_RESULT=`ping -c 3 ${TO} | grep rtt` ; echo "$TO $RESULT"
 
 function check_interface_state() {
   local INTERFACE=$1
@@ -18,7 +16,16 @@ function check_address() {
   echo `ip a show $INTERFACE | grep -w inet | cut -d ' ' -f 6 | cut -d '/' -f 1`
 }
 
+function exec_ping() {
+  RESULT=`ping -c 3 ${TO} | grep rtt ; echo "$TO $RESULT"`
+
+  echo $RESULT
+}
+
 function main() {
+
+  local TIMESTAMP=`date -u --iso-8601=seconds`
+  local PING_RESULT=`exec_ping`
 
   # Decide running interface
   if [ `check_interface_state $WIRED_INTERFACE` == 'UP' ]; then
@@ -35,7 +42,7 @@ function main() {
   curl -H 'Content-Type: application/json' \
        -XPOST localhost:9200/ping-result/_doc?pipeline=ping-result-parser -d '
 {
-  "message": "'"${DATE} ${FROM} ${TO} ${PING_RESULT}"'"
+  "message": "'"${TIMESTAMP} ${FROM} ${TO} ${PING_RESULT}"'"
 }'
 }
 
