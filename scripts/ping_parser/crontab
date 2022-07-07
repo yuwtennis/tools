@@ -1,0 +1,1 @@
+*/10 * * * * bash PATH_TO_REPOS/scripts/ping_parser
