@@ -87,7 +87,7 @@ def construct_esdoc_by_item(msgs, index):
         keys = filter(lambda x: x != 'report_date', m.keys())
 
         for k in keys:
-            doc_id = md5(f"{m['report_date']}_{m[k]}".encode('utf-8'))\
+            doc_id = md5(f"{m['report_date']}_{k}".encode('utf-8'))\
                     .hexdigest()
 
             body = IncomeByItemEntity(
