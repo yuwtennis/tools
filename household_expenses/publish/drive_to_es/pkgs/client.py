@@ -87,7 +87,8 @@ def construct_esdoc_by_item(msgs, index):
         keys = filter(lambda x: x != 'report_date', m.keys())
 
         for k in keys:
-            doc_id = md5(f"{m['report_date']}_{k}".encode('utf-8'))\
+            item_label: str = LabelValue.__fields__[k].get_default()
+            doc_id = md5(f"{m['report_date']}_{item_label}_{k}".encode('utf-8'))\
                     .hexdigest()
 
             body = IncomeByItemEntity(
@@ -95,6 +96,6 @@ def construct_esdoc_by_item(msgs, index):
                     updated_on = datetime.utcnow(),
                     item_key=k,
                     item_value=m[k],
-                    item_labels=LabelValue.__fields__[k].get_default()).dict()
+                    item_labels=item_label).dict()
 
             yield dict(_id=doc_id, _op_type='index', _index=index, **body)
