@@ -31,7 +31,11 @@ def run(config: dict):
     connections.create_connection(hosts=[os.getenv('ES_HOST', 'localhost')], sniff_on_start=True)
 
     persist(iter_ticker(config.get('tickers')), os.getenv('BACKEND_TYPE', 'stdout'))
-    persist(iter_world_bank(config.get('indicators')), os.getenv('BACKEND_TYPE', 'stdout'))
+    persist(
+        iter_world_bank(
+            config.get('indicators'),
+            int(os.getenv('WB_FROM_YEAR'))),
+        os.getenv('BACKEND_TYPE', 'stdout'))
 
 
 def iter_ticker(ticker_list: list) -> Generator:
@@ -56,11 +60,12 @@ def iter_ticker(ticker_list: list) -> Generator:
         yield quote
 
 
-def iter_world_bank(indicator_list: list) -> Generator:
+def iter_world_bank(indicator_list: list, from_year: int) -> Generator:
     """
 
     Parameters
     ----------
+    from_year
     indicator_list
 
     Returns
@@ -74,7 +79,7 @@ def iter_world_bank(indicator_list: list) -> Generator:
             logger.info('Crawling %s in %s...', i, c)
             url: str = f'http://api.worldbank.org/v2/country/{c}/indicators/{i}'
             r = requests.get(url, params={
-                'date': f'{curr_year-10}:{curr_year}', 'format': 'json'})
+                'date': f'{curr_year-from_year}:{curr_year}', 'format': 'json'})
             for detail in r.json()[1]:
                 wb: WorldBank = WorldBank(updated_on=datetime.utcnow(), **detail)
                 # Overwrite with beginning of month
