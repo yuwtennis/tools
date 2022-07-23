@@ -30,11 +30,11 @@ def run(config: dict):
     """
     connections.create_connection(hosts=[os.getenv('ES_HOST', 'localhost')], sniff_on_start=True)
 
-    persist(iter_ticker(config.get('tickers')), os.getenv('BACKEND_TYPE', 'stdout'))
+    persist(list(iter_ticker(config.get('tickers'))), os.getenv('BACKEND_TYPE', 'stdout'))
     persist(
-        iter_world_bank(
+        list(iter_world_bank(
             config.get('indicators'),
-            int(os.getenv('WB_FROM_YEAR'))),
+            int(os.getenv('WB_FROM_YEAR')))),
         os.getenv('BACKEND_TYPE', 'stdout'))
 
 
