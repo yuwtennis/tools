@@ -13,7 +13,7 @@ function toCsv() {
                     .getSheetByName(monthName);
 
     // Column cashout
-    cash_out = parse(sheet, 'E3:E48');
+    cash_out = parse(sheet, 'E3:E54');
 
     csv = csv
             +year+'-'+(m+1).toString().padStart(2, '0')+'-01'
@@ -46,7 +46,7 @@ function parse(sheet, a1notation) {
 }
 
 function setHeader() {
-  let header = 'report_date,income_tax,resident_tax,life_insurance,nursing_insurance,employment_insurance,health_insurance,welfare_pension,savings,securities,n401k,rent,electricity,gas,water,newspaper,cable_tv,tennis_club,pilates,nhk,parking,car,creditcard_visa,creditcard_view,creditcard_mc,basic_life,remote_work';
+  let header = 'report_date,income_tax,resident_tax,life_insurance,nursing_insurance,employment_insurance,health_insurance,welfare_pension,savings,securities,n401k,mortgage,administrative_fee,repair_fee,electricity,gas,water,electricity_usage_in_kwh,gas_usage_in_m3,water_usage_in_m3,internet,cable_tv,tennis_club,pilates,nhk,car_parking,bicycle_parking,car_management,creditcard_visa,creditcard_view,creditcard_mc,basic_life';
 
   return header
 }

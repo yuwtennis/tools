@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from pydantic import Field
 
+
 class LabelValue(BaseModel):
     report_date: list = Field([''], const=True)
     updated_on: list = Field([''], const=True)
@@ -14,19 +15,25 @@ class LabelValue(BaseModel):
     savings: list = Field(['asset'], const=True)
     securities: list = Field(['asset'], const=True)
     n401k: list = Field(['asset'], const=True)
-    rent: list = Field(['cashout', 'lifeline'], const=True)
+    mortgage: list = Field(['cashout', 'lifeline'], const=True)
+    administrative_fee: list = Field(['cashout', 'lifeline'], const=True)
+    repair_fee: list = Field(['cashout', 'lifeline'], const=True)
     electricity: list = Field(['cashout','lifeline'], const=True)
     gas: list = Field(['cashout','lifeline'], const=True)
     water: list = Field(['cashout','lifeline'], const=True)
-    newspaper: list = Field(['cashout', 'service'], const=True)
+    electricity_usage_in_kwh: list = Field(['cashout','lifeline'], const=True)
+    gas_usage_in_m3: list = Field(['cashout','lifeline'], const=True)
+    water_usage_in_m3: list = Field(['cashout','lifeline'], const=True)
+    internet: list = Field(['cashout', 'service'], const=True)
     cable_tv: list = Field(['cashout', 'service'], const=True)
     tennis_club: list = Field(['cashout', 'service'], const=True)
     pilates: list = Field(['cashout', 'service'], const=True)
     nhk: list = Field(['cashout', 'service'], const=True)
-    parking: list = Field(['cashout', 'service'], const=True)
-    car: list = Field(['cashout', 'service'], const=True)
+    car_parking: list = Field(['cashout', 'service'], const=True)
+    bicycle_parking: list = Field(['cashout', 'service'], const=True)
+    car_management: list = Field(['cashout', 'service'], const=True)
     creditcard_visa: list = Field(['cashout','creditcard'], const=True)
     creditcard_view: list = Field(['cashout','creditcard'], const=True)
     creditcard_mc: list = Field(['cashout','creditcard'], const=True)
     basic_life: list = Field(['cashout'], const=True)
-    remote_work: list = Field(['cashout'], const=True)
+
