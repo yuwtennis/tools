@@ -76,8 +76,7 @@ def run():
         )
 
 
-# TODO conditional flow for lifeline usage
-def construct_esdoc_by_date(msgs: List[Dict[Any]], index: str) -> Generator[Dict[Any], None, None]:
+def construct_esdoc_by_date(msgs: List[Dict[str, Any]], index: str) -> Generator[Dict[str, Any], None, None]:
     for m in msgs:
         doc_id = md5(m['report_date'].encode('utf-8')).hexdigest()
         body = IncomeByDateEntity(updated_on=datetime.utcnow(), **m).dict()
@@ -85,7 +84,7 @@ def construct_esdoc_by_date(msgs: List[Dict[Any]], index: str) -> Generator[Dict
         yield dict(_id=doc_id, _op_type='index', _index=index, **body)
 
 
-def construct_esdoc_by_item(msgs: List[Dict[Any]], index: str) -> Generator[Dict[Any], None, None]:
+def construct_esdoc_by_item(msgs: List[Dict[str, Any]], index: str) -> Generator[Dict[str, Any], None, None]:
     for m in msgs:
         keys = filter(lambda x: x != 'report_date', m.keys())
 
