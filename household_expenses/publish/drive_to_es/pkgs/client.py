@@ -1,3 +1,4 @@
+from typing import List, Dict, Any, Generator
 
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -16,6 +17,7 @@ from .values import LabelValue
 
 SCOPES = ['https://www.googleapis.com/auth/drive']
 LOGGER = logging.getLogger(__name__)
+
 
 def run():
         
@@ -74,7 +76,7 @@ def run():
         )
 
 
-def construct_esdoc_by_date(msgs, index):
+def construct_esdoc_by_date(msgs: List[Dict[str, Any]], index: str) -> Generator[Dict[str, Any], None, None]:
     for m in msgs:
         doc_id = md5(m['report_date'].encode('utf-8')).hexdigest()
         body = IncomeByDateEntity(updated_on=datetime.utcnow(), **m).dict()
@@ -82,7 +84,7 @@ def construct_esdoc_by_date(msgs, index):
         yield dict(_id=doc_id, _op_type='index', _index=index, **body)
 
 
-def construct_esdoc_by_item(msgs, index):
+def construct_esdoc_by_item(msgs: List[Dict[str, Any]], index: str) -> Generator[Dict[str, Any], None, None]:
     for m in msgs:
         keys = filter(lambda x: x != 'report_date', m.keys())
 

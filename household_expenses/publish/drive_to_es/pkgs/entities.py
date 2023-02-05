@@ -1,6 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel
 
+
 class IncomeByDateEntity(BaseModel):
     report_date: str
     updated_on: datetime
@@ -14,22 +15,28 @@ class IncomeByDateEntity(BaseModel):
     savings: int = 0
     securities: int = 0
     n401k: int = 0
-    rent: int = 0
+    mortgage: int = 0
+    administrative_fee: int = 0
+    repair_fee: int = 0
     electricity: int = 0
     gas: int = 0
     water: int = 0
-    newspaper: int = 0
+    electricity_usage_in_kwh: int = 0
+    gas_usage_in_m3: int = 0
+    water_usage_in_m3: int = 0
+    internet: int = 0
     cable_tv: int = 0
     tennis_club: int = 0
     pilates: int = 0
     nhk: int = 0
-    parking: int = 0
-    car: int = 0
+    car_parking: int = 0
+    bicycle_parking: int = 0
+    car_management : int = 0
     creditcard_visa: int = 0
     creditcard_view: int = 0
     creditcard_mc: int = 0
     basic_life: int = 0
-    remote_work: int = 0
+
 
 class IncomeByItemEntity(BaseModel):
     report_date: str
