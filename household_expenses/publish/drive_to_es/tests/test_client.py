@@ -2,10 +2,6 @@ from pathlib import Path
 from typing import List, Any, Dict
 
 import sys
-
-from pkgs import values
-from pkgs.values import LabelValue
-
 sys.path.append(str(Path(__file__).resolve().parent.parent.absolute()))
 from pkgs.client import construct_esdoc_by_date, construct_esdoc_by_item
 
