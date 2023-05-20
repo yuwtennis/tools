@@ -12,6 +12,7 @@ from economy.persistence import persist
 from economy.model import WorldBank, StockQuote
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 def run(config: dict):
@@ -54,6 +55,7 @@ def iter_ticker(ticker_list: list) -> Generator:
         logger.info('Crawling %s...', t)
         ticker: Ticker = Ticker(t)
         detail: dict = ticker.info
+        logger.debug("Details: %s", detail)
         quote: StockQuote = StockQuote(updated_on=datetime.utcnow(), **detail)
         quote.meta.id = hashlib.sha256(quote.updated_on.isoformat().encode()).hexdigest()
 
