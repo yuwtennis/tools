@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "drive-to-es"
+version = "0.1.0"
+description = ""
+authors = ["Yu Watanabe <yu.w.tennis@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+google-api-python-client = "~2.108.0"
+google-auth-httplib2 = "~0.1.1"
+google-auth-oauthlib = "~1.1.0"
+elasticsearch = "~7.17.9"
+pydantic = "~1.10.13"
+pytest = "~7.4.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

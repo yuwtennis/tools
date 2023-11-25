@@ -1,4 +1,4 @@
-from pkgs import client
+from drive_to_es import client
 import logging
 
 if __name__ == '__main__':
