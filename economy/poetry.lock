@@ -565,13 +565,13 @@ files = [
 
 [[package]]
 name = "pip"
-version = "21.3.1"
+version = "23.3"
 description = "The PyPA recommended tool for installing Python packages."
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "pip-21.3.1-py3-none-any.whl", hash = "sha256:deaf32dcd9ab821e359cd8330786bcd077604b5c5730c0b096eda46f95c24a2d"},
-    {file = "pip-21.3.1.tar.gz", hash = "sha256:fd11ba3d0fdb4c07fbc5ecbba0b1b719809420f25038f8ee3cd913d3faa3033a"},
+    {file = "pip-23.3-py3-none-any.whl", hash = "sha256:bc38bb52bc286514f8f7cb3a1ba5ed100b76aaef29b521d48574329331c5ae7b"},
+    {file = "pip-23.3.tar.gz", hash = "sha256:bb7d4f69f488432e4e96394612f43ab43dd478d073ef7422604a570f7157561e"},
 ]
 
 [[package]]
@@ -785,4 +785,4 @@ requests = ">=2.31"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "8b8366443a2d298ef09ca129f51919cae9dc5e800e43f15dc95a9d5bc8d1421c"
+content-hash = "67e4e93595aeb93b35e785cf679bca713d94cead8d14bfd08defcdd5631c1647"
