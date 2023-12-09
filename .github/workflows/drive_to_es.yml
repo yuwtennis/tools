@@ -22,10 +22,10 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Test
       run: |
+        cd household_expenses/publish/drive_to_es/
         sudo apt update && sudo apt install -y pipx && \
           pipx install poetry && \
-          poetry install && \
-          cd household_expenses/publish/drive_to_es/
+          poetry install
         make test
         make lint
         make static-type-check
