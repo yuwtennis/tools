@@ -1,52 +1,46 @@
+""" Client module """
 from typing import List, Dict, Any, Generator
-
+from io import BytesIO, StringIO
+import csv
+import logging
+from hashlib import md5
+from datetime import datetime
+from elasticsearch import Elasticsearch
+from elasticsearch.helpers import bulk
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
-from io import BytesIO, StringIO
-from elasticsearch import Elasticsearch
-from elasticsearch.helpers import bulk
-import csv
-import logging
-import os
-from hashlib import md5
-from datetime import datetime
-from .entities import IncomeByDateEntity
-from .entities import IncomeByItemEntity
-from .values import LabelValue
+from drive_to_es.entities import IncomeByDateEntity, IncomeByItemEntity, Env
+from drive_to_es.values import LabelValue
 
 SCOPES = ['https://www.googleapis.com/auth/drive']
 LOGGER = logging.getLogger(__name__)
 
 
 def run():
-        
-    es_host = os.getenv('ES_HOST', ['localhost:9200'])
-    service_account_file = os.getenv('SERVICE_ACCOUNT_FILE')
-    upload_file_name = os.getenv(
-        'UPLOAD_FILE_NAME',
-        f'income-{str(datetime.now().year)}.csv')
-
+    """ Client operations """
     # Prepare credential
     LOGGER.info('Prepare credential.')
-    credentials = service_account.Credentials.from_service_account_file(
-        service_account_file, scopes=SCOPES)
+    env: Env = Env()
+    credentials = service_account.Credentials.from_service_account_info(
+        env.service_account_info, scopes=SCOPES)
 
-    service = build('drive', 'v3', credentials=credentials)
+    service: Any = build('drive', 'v3', credentials=credentials)
 
     # Access drive
     LOGGER.info('Get file ids from drive.')
-    results = service.files().list(\
-        orderBy='modifiedTime desc',\
-        q=f"name='{upload_file_name}'",\
-        fields="nextPageToken, files(id, name, modifiedTime)").execute()
+    results = service.files().list(  # pylint: disable=maybe-no-member
+        orderBy='modifiedTime desc',
+        q=f"name='{env.upload_file_name}'",
+        fields="nextPageToken, files(id, name, modifiedTime)")\
+        .execute()
 
     LOGGER.info(dir(results))
 
     items = results.get('files', [])
     LOGGER.info(items)
 
-    request = service.files().get_media(fileId=items[0]['id'])
+    request = service.files().get_media(fileId=items[0]['id'])  # pylint: disable=maybe-no-member
 
     fh = BytesIO()
     downloader = MediaIoBaseDownload(fh, request)
@@ -54,14 +48,14 @@ def run():
 
     while done is False:
         status, done = downloader.next_chunk()
-        LOGGER.info("Download %d%%." % int(status.progress() * 100))
+        LOGGER.info("Download %d%%.", int(status.progress() * 100))
 
     # Write to elasticsearch
     LOGGER.info('Send to elasticsearch.')
     fh = StringIO(fh.getvalue().decode(), newline='')
 
     data = list(csv.DictReader(fh))
-    es_inst = Elasticsearch(hosts=es_host)
+    es_inst = Elasticsearch(hosts=env.es_host)
 
     bulk(
         es_inst,
@@ -76,15 +70,21 @@ def run():
         )
 
 
-def construct_esdoc_by_date(msgs: List[Dict[str, Any]], index: str) -> Generator[Dict[str, Any], None, None]:
+def construct_esdoc_by_date(
+        msgs: List[Dict[str, Any]],
+        index: str) -> Generator[Dict[str, Any], None, None]:
+    """ Return Elasticsearch document """
     for m in msgs:
         doc_id = md5(m['report_date'].encode('utf-8')).hexdigest()
         body = IncomeByDateEntity(updated_on=datetime.utcnow(), **m).dict()
 
-        yield dict(_id=doc_id, _op_type='index', _index=index, **body)
+        yield {"_id": doc_id, "_op_type": "index", "_index": index, **body}
 
 
-def construct_esdoc_by_item(msgs: List[Dict[str, Any]], index: str) -> Generator[Dict[str, Any], None, None]:
+def construct_esdoc_by_item(
+        msgs: List[Dict[str, Any]],
+        index: str) -> Generator[Dict[str, Any], None, None]:
+    """ Return Elasticsearch document """
     for m in msgs:
         keys = filter(lambda x: x != 'report_date', m.keys())
 
@@ -100,4 +100,4 @@ def construct_esdoc_by_item(msgs: List[Dict[str, Any]], index: str) -> Generator
                     item_value=m[k],
                     item_labels=item_label).dict()
 
-            yield dict(_id=doc_id, _op_type='index', _index=index, **body)
+            yield {"_id": doc_id, "_op_type": "index", "_index": index, **body}

@@ -5,13 +5,20 @@ description = ""
 authors = ["Yu Watanabe <yu.w.tennis@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
 google-api-python-client = "~2.108.0"
 google-auth-httplib2 = "~0.1.1"
 google-auth-oauthlib = "~1.1.0"
 elasticsearch = "~7.17.9"
 pydantic = "~1.10.13"
+
+
+[tool.poetry.group.dev.dependencies]
 pytest = "~7.4.3"
+pylint = "~3.0.2"
+mypy = "~=1.7.1"
+google-api-python-client-stubs = "~=1.23.0"
+google-auth-stubs = "~=0.2.0"
 
 
 [build-system]

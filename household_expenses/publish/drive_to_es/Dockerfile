@@ -1,4 +1,4 @@
-FROM python:3.10-alpine
+FROM python:3.11-alpine
 
 ENV POETRY_HOME="/opt/poetry"
 ENV POETRY_VERSION=1.5.1
@@ -9,4 +9,6 @@ RUN python3 -m venv $POETRY_HOME \
 
 WORKDIR /app
 ADD . /app
-RUN $POETRY_HOME/bin/poetry install
+RUN $POETRY_HOME/bin/poetry install --without dev --sync
+
+ENTRYPOINt python3 __main__.py
