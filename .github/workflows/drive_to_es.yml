@@ -22,7 +22,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Test
       run: |
-        apt install -y pipx && \
+        apt update && apt install -y pipx && \
           pipx install poetry && \
           poetry install && \
           cd household_expenses/publish/drive_to_es/
