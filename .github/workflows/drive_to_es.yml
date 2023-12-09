@@ -3,6 +3,10 @@
 
 name: CI/CD for drive_to_es
 
+run-name: ${{ github.actor }} is running deployment workflow
+
+on: [push]
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -18,7 +22,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Test
       run: |
-        apt install pipx && \
+        apt install -y pipx && \
           pipx install poetry && \
           poetry install && \
           cd household_expenses/publish/drive_to_es/
