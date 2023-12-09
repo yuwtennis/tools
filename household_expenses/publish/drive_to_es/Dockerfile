@@ -9,6 +9,6 @@ RUN python3 -m venv $POETRY_HOME \
 
 WORKDIR /app
 ADD . /app
-RUN $POETRY_HOME/bin/poetry install --without dev --sync
+RUN $POETRY_HOME/bin/poetry install --without dev --sync && rm -rf $POETRY_HOME
 
 ENTRYPOINt python3 __main__.py
