@@ -1,8 +1,12 @@
+""" Values """
 from pydantic import BaseModel
 from pydantic import Field
 
+# pylint: disable=too-few-public-methods
+
 
 class LabelValue(BaseModel):
+    """ Labels for each key """
     report_date: list = Field([''], const=True)
     updated_on: list = Field([''], const=True)
     income_tax: list = Field(['withholding_tax'], const=True)
@@ -36,4 +40,3 @@ class LabelValue(BaseModel):
     creditcard_view: list = Field(['cashout','creditcard'], const=True)
     creditcard_mc: list = Field(['cashout','creditcard'], const=True)
     basic_life: list = Field(['cashout'], const=True)
-

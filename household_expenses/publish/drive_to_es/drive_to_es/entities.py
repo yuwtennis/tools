@@ -1,8 +1,26 @@
+""" Entity module """
 from datetime import datetime
-from pydantic import BaseModel
+from typing import Any
+from pydantic import BaseModel, AnyHttpUrl, Json, BaseSettings
+
+# pylint: disable=too-few-public-methods
+
+
+class Env(BaseSettings):
+    """
+    Attributes
+    ----------
+    es_host: http/https url for elasticsearch host
+    service_account_info; A valid API Key for Service Account
+    upload_file_name: The income statement csv file name
+    """
+    es_host: AnyHttpUrl
+    service_account_info: Json[Any]  # pylint: disable=unsubscriptable-object
+    upload_file_name: str = f'income-{str(datetime.now().year)}.csv'
 
 
 class IncomeByDateEntity(BaseModel):
+    """ Entity which holds income info by date """
     report_date: str
     updated_on: datetime
     income_tax: int = 0
@@ -39,6 +57,7 @@ class IncomeByDateEntity(BaseModel):
 
 
 class IncomeByItemEntity(BaseModel):
+    """ Entity which holds income info by income attribute """
     report_date: str
     updated_on: datetime
     item_key: str

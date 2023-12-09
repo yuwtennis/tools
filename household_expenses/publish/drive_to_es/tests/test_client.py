@@ -1,9 +1,8 @@
+from drive_to_es.client import construct_esdoc_by_date
 from pathlib import Path
 from typing import List, Any, Dict
 
-import sys
-sys.path.append(str(Path(__file__).resolve().parent.parent.absolute()))
-from pkgs.client import construct_esdoc_by_date, construct_esdoc_by_item
+PATH_TO_FIXTURE = f'{str(Path(__file__).resolve().parent.absolute())}/fixtures'
 
 
 def test_construct_esdoc_by_date(single_month_report_as_dict):
