@@ -2,23 +2,33 @@ version: "3.3"
 
 services:
   jupyter:
-    image: jupyter/scipy-notebook:33add21fab64
-    restart: "always"
-    volumes:
-      - /home/jovyan
-    ports:
-      - "8888:8888"
-  db:
-    image: postgres:13.1-alpine
-    restart: "no"
-    volumes:
-      - db-data:/var/lib/postgresql/data:rw
+    image: jupyter/all-spark-notebook:x86_64-python-3.11d
+    networks:
+      - service00
+  postgres:
+    image: postgres:16.2-alpine
     networks:
       - service00
     environment:
       POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
+  mariadb:
+    image: mariadb:11.3-jammy
+    networks:
+      - service00
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+  mysql:
+    image: mysql:8.0-bookworm
+    networks:
+      - service00
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3307"
 
   # elasticsearch
   # https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
@@ -60,13 +70,15 @@ services:
       - mongo-data:/data/db
     ports:
       - "27017:27017"
+    networks:
+      - service00
 
 volumes:
   data01:
     driver: local
-  db-data:
-    driver: local
   mongo-data:
+    driver: local
+  jupyter-data:
     driver: local
 
 networks:
