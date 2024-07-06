@@ -25,6 +25,9 @@ idna = "~3.7"
 urllib3 = "~1.26.19"
 setuptools = "~65.5.1"
 
+[tool.poetry.group.dev]
+optional = true
+
 [tool.poetry.group.dev.dependencies]
 python = "^3.11"
 pytest = "^8.2.2"
